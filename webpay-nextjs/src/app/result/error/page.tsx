@@ -1,4 +1,4 @@
-const Success = () => {
+const Error = () => {
   return (
     <>
       <div className="min-h-screen flex flex-col justify-center items-center gap-3">
@@ -11,4 +11,4 @@ const Success = () => {
   );
 };
 
-export default Success;
+export default Error;
