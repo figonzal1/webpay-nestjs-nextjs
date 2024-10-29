@@ -24,10 +24,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
-      <div className="flex flex-col items-center justify-start p-24 gap-10">
-        <h1 className="font-bold text-2xl text-center">
-          Ganatiempo Transbank - Webpay Test
-        </h1>
+      <div className="flex flex-col items-center justify-start p-24">
+        <h1 className="font-bold text-2xl text-center">Webpay - Next + Nestjs</h1>
+
+        <h2 className="font-semibold text-xl text-center pb-10">Basic Test</h2>
 
         <div className="flex flex-col justify-center items-center gap-4">
           <Input
