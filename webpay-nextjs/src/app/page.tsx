@@ -10,7 +10,7 @@ export default function Home() {
             <MdLock className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-slate-900">WebPay Plus</h1>
-          <p className="text-slate-500 text-sm mt-1">Integración de ejemplo · Next.js + NestJS</p>
+          <p className="text-slate-500 text-sm mt-1">Demo integration · Next.js + NestJS</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -20,12 +20,12 @@ export default function Home() {
 
           <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-center gap-1.5">
             <MdLock className="w-3.5 h-3.5 text-slate-400" />
-            <span className="text-xs text-slate-400">Transacción segura vía Transbank</span>
+            <span className="text-xs text-slate-400">Secure transaction via Transbank</span>
           </div>
         </div>
 
         <p className="text-center text-xs text-slate-400 mt-4">
-          Template de ejemplo · No usar en producción
+          Demo template · Do not use in production
         </p>
       </div>
     </main>

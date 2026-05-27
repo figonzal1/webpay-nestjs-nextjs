@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { MdCreditCard, MdError } from "react-icons/md";
-import { crearTransaccion } from "../actions";
+import { createTransaction } from "../actions";
 
 export function PaymentForm() {
   const [amount, setAmount] = useState("");
@@ -20,12 +20,12 @@ export function PaymentForm() {
   function handlePay() {
     const parsed = Number.parseInt(amount, 10);
     if (!parsed || parsed <= 0) {
-      setError("Ingresa un monto válido mayor a 0.");
+      setError("Enter a valid amount greater than 0.");
       return;
     }
     setError(null);
     startTransition(async () => {
-      const result = await crearTransaccion(parsed);
+      const result = await createTransaction(parsed);
       if ("error" in result) {
         setError(result.error);
         return;
@@ -45,7 +45,7 @@ export function PaymentForm() {
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="amount" className="text-sm font-medium text-slate-700">
-          Monto a pagar (CLP)
+          Amount to pay (CLP)
         </label>
         <div className="relative">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium select-none">
@@ -82,12 +82,12 @@ export function PaymentForm() {
         {isPending ? (
           <>
             <AiOutlineLoading3Quarters className="w-4 h-4 animate-spin" />
-            Procesando…
+            Processing…
           </>
         ) : (
           <>
             <MdCreditCard className="w-4 h-4" />
-            Pagar con WebPay
+            Pay with WebPay
           </>
         )}
       </button>

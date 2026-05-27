@@ -3,9 +3,9 @@
 type TxSuccess = { token: string; url: string };
 type TxError = { error: string };
 
-export async function crearTransaccion(amount: number): Promise<TxSuccess | TxError> {
+export async function createTransaction(amount: number): Promise<TxSuccess | TxError> {
   if (!Number.isFinite(amount) || amount <= 0) {
-    return { error: "Monto inválido." };
+    return { error: "Invalid amount." };
   }
 
   const apiUrl = process.env.API_URL ?? "http://localhost:3000";
@@ -19,11 +19,11 @@ export async function crearTransaccion(amount: number): Promise<TxSuccess | TxEr
     });
 
     if (!res.ok) {
-      return { error: `Error del backend (${res.status}).` };
+      return { error: `Backend error (${res.status}).` };
     }
 
     return (await res.json()) as TxSuccess;
   } catch {
-    return { error: "No se pudo conectar con el backend. Verifica que NestJS esté corriendo." };
+    return { error: "Could not connect to the backend. Make sure NestJS is running." };
   }
 }

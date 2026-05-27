@@ -1,10 +1,10 @@
 # webpay-nextjs
 
-Frontend de integración con **Transbank Webpay Plus** construido con Next.js 16. Parte de un monorepo con el backend NestJS en `../webpay-nestjs`.
+**Transbank Webpay Plus** integration frontend built with Next.js 16. Part of a monorepo with the NestJS backend in `../webpay-nestjs`.
 
 ## Stack
 
-| Tecnología | Versión |
+| Technology | Version |
 |---|---|
 | Next.js | 16.2.6 |
 | React | 19.2.6 |
@@ -12,69 +12,69 @@ Frontend de integración con **Transbank Webpay Plus** construido con Next.js 16
 | TypeScript | 6.0.3 |
 | pnpm | 11.4.0 |
 
-## Requisitos previos
+## Prerequisites
 
 - Node.js 22+
-- pnpm 11.4.0 (via corepack — ver más abajo)
-- Backend NestJS corriendo en `http://localhost:3000`
+- pnpm 11.4.0 (via corepack — see below)
+- NestJS backend running at `http://localhost:3000`
 
-## Instalación
+## Installation
 
-> **Prerequisito global (una sola vez por máquina):** Node.js 16.9+ incluye corepack. Ejecutar desde cualquier directorio:
+> **Global prerequisite (once per machine):** Node.js 16.9+ ships with corepack. Run from any directory:
 > ```bash
 > corepack enable
 > ```
-> Corepack leerá el campo `packageManager` del `package.json` y usará automáticamente `pnpm@11.4.0`.
+> Corepack reads the `packageManager` field in `package.json` and automatically uses `pnpm@11.4.0`.
 
-Instalar dependencias (ejecutar dentro de esta carpeta):
+Install dependencies (run inside this folder):
 
 ```bash
 pnpm install
 ```
 
-## Desarrollo
+## Development
 
 ```bash
-pnpm dev   # servidor en http://localhost:4000 con Turbopack
+pnpm dev   # server at http://localhost:4000 with Turbopack
 ```
 
-## Scripts disponibles
+## Available scripts
 
 ```bash
-pnpm dev           # dev con Turbopack (puerto 4000)
-pnpm build         # build de producción
-pnpm start         # servir build de producción (puerto 4000)
+pnpm dev           # dev with Turbopack (port 4000)
+pnpm build         # production build
+pnpm start         # serve production build (port 4000)
 
-pnpm lint          # oxlint + eslint (orden importa: oxlint primero)
-pnpm lint:fix      # auto-fix con ambos linters
-pnpm format        # Prettier (escribe)
-pnpm format:check  # Prettier (solo verifica)
+pnpm lint          # oxlint + eslint (order matters: oxlint first)
+pnpm lint:fix      # auto-fix with both linters
+pnpm format        # Prettier (write)
+pnpm format:check  # Prettier (check only)
 ```
 
-## Flujo de pago
+## Payment flow
 
 ```
-1. /                 → Formulario de pago (PaymentForm)
-2. Server Action      → crearTransaccion(amount) → POST al backend NestJS
-3. Backend            → Transbank SDK → { token, url }
-4. Cliente            → Formulario oculto con token_ws → Redirección a Transbank
-5. Transbank          → Redirige de vuelta al backend /webpay/commit
-6. Backend            → Confirma y redirige a:
-   /result/success    → Pago aprobado
-   /result/error      → Pago rechazado, anulado o timeout
+1. /                  → Payment form (PaymentForm)
+2. Server Action       → createTransaction(amount) → POST to NestJS backend
+3. Backend             → Transbank SDK → { token, url }
+4. Client              → Hidden form with token_ws → Redirect to Transbank
+5. Transbank           → Redirects back to backend /webpay/commit
+6. Backend             → Confirms and redirects to:
+   /result/success     → Payment approved
+   /result/error       → Payment rejected, cancelled, or timeout
 ```
 
-## Rutas
+## Routes
 
-| Ruta | Descripción |
+| Route | Description |
 |---|---|
-| `/` | Formulario para ingresar monto e iniciar el pago |
-| `/result/success` | Página de confirmación de pago exitoso |
-| `/result/error` | Página de error o pago rechazado |
+| `/` | Form to enter amount and start payment |
+| `/result/success` | Payment confirmed page |
+| `/result/error` | Payment failed or rejected page |
 
-## Configuración
+## Configuration
 
-**`API_URL`** se define en `next.config.ts` (no en `.env`). Cambiar ahí cuando el backend apunte a otro entorno.
+**`API_URL`** is set in `next.config.ts` (not `.env`). Change it there when pointing the backend to a different environment.
 
 ```ts
 // next.config.ts
@@ -83,26 +83,25 @@ env: {
 }
 ```
 
-> Por defecto apunta a `http://localhost:3000` (backend NestJS local).
+> Defaults to `http://localhost:3000` (local NestJS backend).
 
-## Estructura
+## Structure
 
 ```
 src/app/
-├── layout.tsx               # Layout raíz
-├── page.tsx                 # Página principal con formulario
-├── globals.css              # Estilos globales y tema Tailwind v4
-├── actions.ts               # Server Action: crearTransaccion()
+├── layout.tsx               # Root layout
+├── page.tsx                 # Home page with payment form
+├── globals.css              # Global styles and Tailwind v4 theme
+├── actions.ts               # Server Action: createTransaction()
 ├── components/
-│   └── PaymentForm.tsx      # Componente cliente del formulario
+│   └── PaymentForm.tsx      # Client-side form component
 └── result/
-    ├── success/page.tsx     # Resultado pago exitoso
-    └── error/page.tsx       # Resultado pago fallido
+    ├── success/page.tsx     # Successful payment result
+    └── error/page.tsx       # Failed payment result
 ```
 
-## Notas de configuración
+## Configuration notes
 
-- **Tailwind v4**: no hay `tailwind.config.ts`. La personalización del tema vive en `globals.css` con bloques `@theme {}`.
-- **ESLint flat config**: usa `eslint.config.mjs`, no `.eslintrc`.
-- **Path alias**: `@/*` apunta a `./src/*`.
-- **Textos en español**: toda la UI está en español.
+- **Tailwind v4**: no `tailwind.config.ts`. Theme customization lives in `globals.css` via `@theme {}` blocks.
+- **ESLint flat config**: uses `eslint.config.mjs`, not `.eslintrc`.
+- **Path alias**: `@/*` maps to `./src/*`.

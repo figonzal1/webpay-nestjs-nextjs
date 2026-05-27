@@ -1,114 +1,114 @@
 # webpay-nestjs
 
-Backend de integración con **Transbank Webpay Plus** construido con NestJS. Actúa como proxy HTTP sin estado entre el frontend Next.js y la API de Transbank.
+**Transbank Webpay Plus** integration backend built with NestJS. Acts as a stateless HTTP proxy between the Next.js frontend and the Transbank API.
 
 ## Stack
 
-| Tecnología | Versión |
+| Technology | Version |
 |---|---|
 | NestJS | 11.x |
 | TypeScript | 6.0.3 |
 | Transbank SDK | 6.1.1 |
 | pnpm | 11.4.0 |
 
-## Requisitos previos
+## Prerequisites
 
 - Node.js 22+
-- pnpm 11.4.0 (via corepack — ver más abajo)
+- pnpm 11.4.0 (via corepack — see below)
 
-## Instalación
+## Installation
 
-> **Prerequisito global (una sola vez por máquina):** Node.js 16.9+ incluye corepack. Ejecutar desde cualquier directorio:
+> **Global prerequisite (once per machine):** Node.js 16.9+ ships with corepack. Run from any directory:
 > ```bash
 > corepack enable
 > ```
-> Corepack leerá el campo `packageManager` del `package.json` y usará automáticamente `pnpm@11.4.0`.
+> Corepack reads the `packageManager` field in `package.json` and automatically uses `pnpm@11.4.0`.
 
-Instalar dependencias (ejecutar dentro de esta carpeta):
+Install dependencies (run inside this folder):
 
 ```bash
 pnpm install
 ```
 
-## Desarrollo
+## Development
 
 ```bash
-pnpm start:dev   # servidor en http://localhost:3000 con hot-reload
+pnpm start:dev   # server at http://localhost:3000 with hot-reload
 ```
 
-## Scripts disponibles
+## Available scripts
 
 ```bash
-pnpm start:dev     # dev con hot-reload (puerto 3000)
-pnpm build         # compilar a dist/
-pnpm start:prod    # ejecutar build de producción
+pnpm start:dev     # dev with hot-reload (port 3000)
+pnpm build         # compile to dist/
+pnpm start:prod    # run production build
 
-pnpm lint          # oxlint + eslint (doble pasada requerida)
-pnpm lint:fix      # auto-fix con ambos linters
-pnpm format        # Prettier (escribe)
-pnpm format:check  # Prettier (solo verifica)
+pnpm lint          # oxlint + eslint (dual pass required)
+pnpm lint:fix      # auto-fix with both linters
+pnpm format        # Prettier (write)
+pnpm format:check  # Prettier (check only)
 
-pnpm test          # tests unitarios (Jest)
-pnpm test:e2e      # tests E2E (supertest)
-pnpm test:cov      # reporte de cobertura
+pnpm test          # unit tests (Jest)
+pnpm test:e2e      # E2E tests (supertest)
+pnpm test:cov      # coverage report
 ```
 
 ## API
 
 ### `POST /webpay`
 
-Crea una transacción en Transbank y retorna el token y la URL de redirección.
+Creates a transaction in Transbank and returns the token and redirect URL.
 
 **Body:**
 ```json
 { "amount": 5000 }
 ```
 
-**Respuesta:**
+**Response:**
 ```json
 { "token": "...", "url": "https://webpay3gint.transbank.cl/..." }
 ```
 
 ### `GET /webpay/commit?token_ws=<token>`
 
-Callback de Transbank tras el pago exitoso. Confirma la transacción y redirige al frontend.
+Transbank callback after a successful payment. Confirms the transaction and redirects to the frontend.
 
 ### `POST /webpay/commit`
 
-Callback de Transbank para timeout o anulación del pago. Redirige a la página de error.
+Transbank callback for payment timeout or cancellation. Redirects to the error page.
 
-## Arquitectura
+## Architecture
 
-La aplicación es un **proxy HTTP sin estado** — no usa base de datos. Todo el estado de pago reside en la API de Transbank.
+The application is a **stateless HTTP proxy** — no database. All payment state lives in the Transbank API.
 
 ```
-Frontend (puerto 4000)
+Frontend (port 4000)
     │
     ▼  POST /webpay
-Backend NestJS (puerto 3000)
+Backend NestJS (port 3000)
     │
-    ▼  Transbank SDK (modo integración/test)
-API Transbank
+    ▼  Transbank SDK (integration/test mode)
+Transbank API
     │
-    ▼  GET o POST /webpay/commit
+    ▼  GET or POST /webpay/commit
 Backend NestJS
     │
-    ▼  Redirige a /result/success o /result/error
-Frontend (puerto 4000)
+    ▼  Redirects to /result/success or /result/error
+Frontend (port 4000)
 ```
 
-## Configuración
+## Configuration
 
-| Parámetro | Valor (dev) |
+| Parameter | Value (dev) |
 |---|---|
-| Puerto backend | `3000` |
-| CORS permitido | `http://localhost:4000` |
-| URL de retorno Transbank | `http://localhost:3000/webpay/commit` |
-| Credenciales Transbank | Modo integración (test) |
+| Backend port | `3000` |
+| Allowed CORS origin | `http://localhost:4000` |
+| Transbank return URL | `http://localhost:3000/webpay/commit` |
+| Transbank credentials | Integration mode (test) |
 
-> Estos valores son solo para desarrollo local. Para producción se deben actualizar en `src/main.ts` y en el servicio de Webpay.
+> These values are for local development only. For production, update `src/main.ts` and the Webpay service accordingly.
 
-## Estructura
+## Structure
 
 ```
 src/
@@ -118,8 +118,8 @@ src/
 ├── app.service.ts
 └── webpay/
     ├── webpay.module.ts
-    ├── webpay.controller.ts       # Endpoints /webpay y /webpay/commit
-    ├── webpay.service.ts          # Lógica con Transbank SDK
+    ├── webpay.controller.ts       # /webpay and /webpay/commit endpoints
+    ├── webpay.service.ts          # Transbank SDK logic
     ├── dto/
     │   └── create-webpay.dto.ts
     └── entities/
@@ -128,8 +128,8 @@ src/
 
 ## Linting
 
-Requiere **doble pasada**: oxlint primero (rápido, basado en Rust), luego ESLint (análisis TypeScript). Ejecutar solo uno deja checos sin cubrir.
+Requires a **dual pass**: oxlint first (fast, Rust-based), then ESLint (TypeScript-aware). Running only one misses checks.
 
 ```bash
-pnpm lint   # oxlint + eslint secuencialmente
+pnpm lint   # oxlint + eslint sequentially
 ```

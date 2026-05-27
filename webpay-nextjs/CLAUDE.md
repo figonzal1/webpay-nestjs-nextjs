@@ -43,4 +43,4 @@ Payment flow:
 
 - **Prettier**: single quotes, trailing commas, 100-char line width, 2-space indent, semicolons — run `pnpm format` after edits
 - **Commits**: Conventional Commits (`feat:`, `fix:`, `chore:`, `style:`, `docs:`, `refactor:`)
-- **Language**: UI text and user-facing strings are in Spanish
+- **Language**: UI text and user-facing strings are in English
