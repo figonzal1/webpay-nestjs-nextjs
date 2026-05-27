@@ -1,14 +1,34 @@
-const Error = () => {
-  return (
-    <>
-      <div className="min-h-screen flex flex-col justify-center items-center gap-3">
-        <h1 className="text-2xl font-bold">Estado del pago transbank</h1>
-        <div className="bg-red-500 py-3 px-5 rounded-xl">
-          <h1 className="font-bold">Pago fallido</h1>
-        </div>
-      </div>
-    </>
-  );
-};
+import Link from "next/link";
+import { MdArrowBack, MdCancel } from "react-icons/md";
 
-export default Error;
+export default function PaymentError() {
+  return (
+    <main className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md text-center">
+        <div className="flex justify-center mb-6">
+          <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
+            <MdCancel className="w-10 h-10 text-red-600" />
+          </div>
+        </div>
+
+        <h1 className="text-2xl font-bold text-slate-900 mb-2">Payment failed</h1>
+        <p className="text-slate-500 mb-8">
+          Your payment could not be processed. You can try again.
+        </p>
+
+        <div className="bg-white border border-red-200 rounded-2xl px-6 py-4 mb-6 shadow-sm">
+          <p className="text-sm text-red-700 font-medium">Transbank payment status</p>
+          <p className="text-xs text-slate-400 mt-1">Transaction rejected or cancelled</p>
+        </div>
+
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors"
+        >
+          <MdArrowBack className="w-4 h-4" />
+          Try again
+        </Link>
+      </div>
+    </main>
+  );
+}

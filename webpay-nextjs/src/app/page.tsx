@@ -1,65 +1,32 @@
-"use client";
-import React, { useState } from "react";
-import { Button, Input } from "@nextui-org/react";
-import axios from "axios";
+import { MdLock } from "react-icons/md";
+import { PaymentForm } from "./components/PaymentForm";
 
 export default function Home() {
-  const [tx, setTx] = useState({
-    token: "",
-    url: "",
-  });
-  const [price, setPrice] = useState(0);
-
-  const createTx = () => {
-    const runPost = async () => {
-      const result = await axios.post("http://localhost:3000/webpay", {
-        amount: price,
-      });
-
-      setTx(result.data);
-    };
-
-    runPost();
-  };
-
   return (
-    <main className="min-h-screen">
-      <div className="flex flex-col items-center justify-start p-24">
-        <h1 className="font-bold text-2xl text-center">Webpay - Next + Nestjs</h1>
-
-        <h2 className="font-semibold text-xl text-center pb-10">Basic Test</h2>
-
-        <div className="flex flex-col justify-center items-center gap-4">
-          <Input
-            type="number"
-            placeholder="0.00"
-            label="Precio"
-            className="max-w-xs"
-            onChange={(event) => setPrice(Number.parseInt(event.target.value))}
-          />
-
-          <Button
-            className="bg-blue-600 rounded-lg py-3 px-5 font-bold text-white"
-            onClick={() => createTx()}
-          >
-            Iniciar Tx
-          </Button>
-
-          {tx.token && tx.url && (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: `
-                <form method="post" action="${tx.url}">
-                  <input type="hidden" name="token_ws" value="${tx.token}" />
-                  <button style="background-color: #F97316; border-radius: 0.5rem; padding: 0.75rem 1.25rem;" type="submit">
-                    Pagar
-                  </button>
-                </form>
-              `,
-              }}
-            />
-          )}
+    <main className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#00A19B] mb-4 shadow-lg">
+            <MdLock className="w-7 h-7 text-white" />
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900">WebPay Plus</h1>
+          <p className="text-slate-500 text-sm mt-1">Demo integration · Next.js + NestJS</p>
         </div>
+
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          <div className="p-6">
+            <PaymentForm />
+          </div>
+
+          <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-center gap-1.5">
+            <MdLock className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-xs text-slate-400">Secure transaction via Transbank</span>
+          </div>
+        </div>
+
+        <p className="text-center text-xs text-slate-400 mt-4">
+          Demo template · Do not use in production
+        </p>
       </div>
     </main>
   );

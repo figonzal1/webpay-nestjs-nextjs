@@ -1,73 +1,135 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# webpay-nestjs
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+**Transbank Webpay Plus** integration backend built with NestJS. Acts as a stateless HTTP proxy between the Next.js frontend and the Transbank API.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Stack
 
-## Description
+| Technology | Version |
+|---|---|
+| NestJS | 11.x |
+| TypeScript | 6.0.3 |
+| Transbank SDK | 6.1.1 |
+| pnpm | 11.4.0 |
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Prerequisites
+
+- Node.js 22+
+- pnpm 11.4.0 (via corepack — see below)
 
 ## Installation
 
-```bash
-$ npm install
-```
+> **Global prerequisite (once per machine):** Node.js 16.9+ ships with corepack. Run from any directory:
+> ```bash
+> corepack enable
+> ```
+> Corepack reads the `packageManager` field in `package.json` and automatically uses `pnpm@11.4.0`.
 
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
+Install dependencies (run inside this folder):
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+pnpm install
 ```
 
-## Support
+## Development
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+pnpm start:dev   # server at http://localhost:3000 with hot-reload
+```
 
-## Stay in touch
+## Available scripts
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+pnpm start:dev     # dev with hot-reload (port 3000)
+pnpm build         # compile to dist/
+pnpm start:prod    # run production build
 
-## License
+pnpm lint          # oxlint + eslint (dual pass required)
+pnpm lint:fix      # auto-fix with both linters
+pnpm format        # Prettier (write)
+pnpm format:check  # Prettier (check only)
 
-Nest is [MIT licensed](LICENSE).
+pnpm test          # unit tests (Jest)
+pnpm test:e2e      # E2E tests (supertest)
+pnpm test:cov      # coverage report
+```
+
+## API
+
+### `POST /webpay`
+
+Creates a transaction in Transbank and returns the token and redirect URL.
+
+**Body:**
+```json
+{ "amount": 5000 }
+```
+
+**Response:**
+```json
+{ "token": "...", "url": "https://webpay3gint.transbank.cl/..." }
+```
+
+### `GET /webpay/commit?token_ws=<token>`
+
+Transbank callback after a successful payment. Confirms the transaction and redirects to the frontend.
+
+### `POST /webpay/commit`
+
+Transbank callback for payment timeout or cancellation. Redirects to the error page.
+
+## Architecture
+
+The application is a **stateless HTTP proxy** — no database. All payment state lives in the Transbank API.
+
+```
+Frontend (port 4000)
+    │
+    ▼  POST /webpay
+Backend NestJS (port 3000)
+    │
+    ▼  Transbank SDK (integration/test mode)
+Transbank API
+    │
+    ▼  GET or POST /webpay/commit
+Backend NestJS
+    │
+    ▼  Redirects to /result/success or /result/error
+Frontend (port 4000)
+```
+
+## Configuration
+
+| Parameter | Value (dev) |
+|---|---|
+| Backend port | `3000` |
+| Allowed CORS origin | `http://localhost:4000` |
+| Transbank return URL | `http://localhost:3000/webpay/commit` |
+| Transbank credentials | Integration mode (test) |
+
+> These values are for local development only. For production, update `src/main.ts` and the Webpay service accordingly.
+
+## Structure
+
+```
+src/
+├── main.ts                        # Bootstrap, CORS, ValidationPipe
+├── app.module.ts
+├── app.controller.ts
+├── app.service.ts
+└── webpay/
+    ├── webpay.module.ts
+    ├── webpay.controller.ts       # /webpay and /webpay/commit endpoints
+    ├── webpay.service.ts          # Transbank SDK logic
+    ├── dto/
+    │   └── create-webpay.dto.ts
+    └── entities/
+        └── webpay.entity.ts
+```
+
+## Linting
+
+Requires a **dual pass**: oxlint first (fast, Rust-based), then ESLint (TypeScript-aware). Running only one misses checks.
+
+```bash
+pnpm lint   # oxlint + eslint sequentially
+```

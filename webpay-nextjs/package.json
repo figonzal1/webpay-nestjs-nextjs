@@ -2,28 +2,35 @@
   "name": "webpay-nextjs",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@11.4.0",
   "scripts": {
     "dev": "next dev --turbopack -p 4000",
     "build": "next build",
     "start": "next start -p 4000",
-    "lint": "next lint"
+    "lint": "oxlint src/ && eslint src/",
+    "lint:fix": "oxlint src/ --fix && eslint src/ --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css}\""
   },
   "dependencies": {
-    "@nextui-org/react": "^2.6.11",
-    "axios": "^1.7.9",
-    "framer-motion": "^11.17.0",
-    "next": "15.1.4",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "next": "16.2.6",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "react-icons": "5.6.0"
   },
   "devDependencies": {
-    "@types/node": "^22.10.5",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "eslint": "^8.57.1",
-    "eslint-config-next": "15.1.4",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.17",
-    "typescript": "^5.7.3"
+    "@tailwindcss/postcss": "^4.3.0",
+    "@types/node": "25.9.1",
+    "@types/react": "19.2.15",
+    "@types/react-dom": "19.2.3",
+    "eslint": "10.4.0",
+    "eslint-config-next": "16.2.6",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-oxlint": "^1.67.0",
+    "oxlint": "^1.67.0",
+    "postcss": "8.5.15",
+    "prettier": "^3.8.3",
+    "tailwindcss": "4.3.0",
+    "typescript": "6.0.3"
   }
 }

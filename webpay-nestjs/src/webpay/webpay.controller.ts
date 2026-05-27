@@ -14,28 +14,26 @@ export class WebpayController {
 
   @Get('/commit')
   async callback(@Query('token_ws') tokenWs: string, @Res() res: Response) {
+    if (!tokenWs) {
+      return res.redirect('http://localhost:4000/result/error');
+    }
+
     const response = await this.webpayService.commitTx(tokenWs);
 
-    if (response.response_code == 0) {
-      res.redirect('http://localhost:4000/result/success');
-    } else if (response.response_code != 0) {
-      res.redirect('http://localhost:4000/result/error');
+    if (response.response_code === 0) {
+      return res.redirect('http://localhost:4000/result/success');
     }
-    return response;
+    return res.redirect('http://localhost:4000/result/error');
   }
 
-  //Transbank devuelve callback en POST en desarrollo al fallar
+  // Transbank envía POST al returnUrl con los parámetros en el body al abortar o timeout
   @Post('/commit')
   failedCallback(
-    @Query('TKB_TOKEN') tbkToken: string,
-    @Query('TKB_ORDEN_COMPRA') tbkOrdenCompra: string,
-    @Query('TKB_ID_SESSION') tbkIdSession: string,
+    @Body('TBK_TOKEN') tbkToken: string,
+    @Body('TBK_ORDEN_COMPRA') tbkOrdenCompra: string,
+    @Body('TBK_ID_SESSION') tbkIdSession: string,
   ) {
-    return {
-      tbkToken: tbkToken,
-      tbkOrdenCompra: tbkOrdenCompra,
-      tbkIdSession: tbkIdSession,
-    };
+    return { tbkToken, tbkOrdenCompra, tbkIdSession };
   }
 
   @Get('/status/:token_ws')
