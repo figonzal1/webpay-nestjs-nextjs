@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateWebpayDto } from './dto/create-webpay.dto';
-import {
-  IntegrationApiKeys,
-  IntegrationCommerceCodes,
-  WebpayPlus,
-} from 'transbank-sdk';
+import { IntegrationApiKeys, IntegrationCommerceCodes, WebpayPlus } from 'transbank-sdk';
 
 @Injectable()
 export class WebpayService {
@@ -18,12 +14,7 @@ export class WebpayService {
     const sessionId = 'Session-' + Math.floor(Math.random() * 10000) + 1;
     const returnUrl = 'http://localhost:3000/webpay/commit';
 
-    return await this.tx.create(
-      buyOrder,
-      sessionId,
-      createWebpayDto.amount,
-      returnUrl,
-    );
+    return await this.tx.create(buyOrder, sessionId, createWebpayDto.amount, returnUrl);
   }
 
   async commitTx(tokenWs: string) {
