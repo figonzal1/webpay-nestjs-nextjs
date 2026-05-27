@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Input } from "@nextui-org/react";
 import axios from "axios";
 
 export default function Home() {
@@ -30,20 +29,22 @@ export default function Home() {
         <h2 className="font-semibold text-xl text-center pb-10">Basic Test</h2>
 
         <div className="flex flex-col justify-center items-center gap-4">
-          <Input
-            type="number"
-            placeholder="0.00"
-            label="Precio"
-            className="max-w-xs"
-            onChange={(event) => setPrice(Number.parseInt(event.target.value))}
-          />
+          <div className="flex flex-col gap-1 max-w-xs w-full">
+            <label className="text-sm font-medium">Precio</label>
+            <input
+              type="number"
+              placeholder="0.00"
+              className="border border-gray-300 rounded-lg px-3 py-2 bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(event) => setPrice(Number.parseInt(event.target.value))}
+            />
+          </div>
 
-          <Button
-            className="bg-blue-600 rounded-lg py-3 px-5 font-bold text-white"
+          <button
+            className="bg-blue-600 hover:bg-blue-700 rounded-lg py-3 px-5 font-bold text-white transition-colors cursor-pointer"
             onClick={() => createTx()}
           >
             Iniciar Tx
-          </Button>
+          </button>
 
           {tx.token && tx.url && (
             <div
