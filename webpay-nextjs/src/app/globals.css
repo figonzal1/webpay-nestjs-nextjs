@@ -1,8 +1,9 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --color-background: #ffffff;
-  --color-foreground: #171717;
+  --font-sans: var(--font-inter), Arial, Helvetica, sans-serif;
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -15,5 +16,4 @@
 body {
   color: var(--color-foreground);
   background: var(--color-background);
-  font-family: Arial, Helvetica, sans-serif;
 }
