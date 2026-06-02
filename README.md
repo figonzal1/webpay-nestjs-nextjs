@@ -4,6 +4,8 @@ Demo integration of **Transbank Webpay Plus** using a monorepo with NestJS as th
 
 > Demo project using integration-mode (test) credentials. Not suitable for production without proper security hardening.
 
+![WebPay Plus demo](./assets/portrait.png)
+
 ## Monorepo structure
 
 ```
